@@ -3,9 +3,10 @@
 图片压缩方法来源于：[Luban](https://github.com/Curzibn/Luban)
 ---
 
-并没有经过同意的情况下，我对`Luban`代码进行了修改，去除了RxJava的使用，依据个人理解简单优化了一下api调用方式
+并没有经过同意的情况下，我对`Luban`代码进行了修改，去除了RxJava的使用，依据个人理解简单优化了一下api调用方式，如Luban的作者不爽，可以联系我删除
 
 **使用方法**
+
 没有依赖第三方库，需要加入下面权限
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -34,15 +35,15 @@ Java代码
             }
         }).start();
 
-|方法|说明|
-|--|--|
-|load(file)|传入要压缩的图片文件|
-|listener(new OnCompressListener())|监听压缩进程|
-|start()|开始压缩|
-|getImageSize(filePath)|根据图片路径获取尺寸|
-|onDestory()|销毁未执行完毕的异步线程|
+方法|说明
+--|--
+load(file)|传入要压缩的图片文件
+listener(new OnCompressListener())|监听压缩进程
+start()|开始压缩
+getImageSize(filePath)|根据图片路径获取尺寸
+onDestory()|销毁未执行完毕的异步线程
 
-**最好在使用Compressor的页面，在页面的onDestory方法执行之前，调用Compressor.onDestory()，原因是Compressor异步线程用的是AsyncTask**
+**最好在使用Compressor页面的onDestory方法执行之前，调用Compressor.onDestory()，原因是Compressor异步线程用的是AsyncTask**
 
 #License
 
