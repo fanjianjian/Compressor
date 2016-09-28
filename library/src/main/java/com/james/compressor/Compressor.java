@@ -69,7 +69,7 @@ public class Compressor {
     }
 
     public Compressor start() {
-        Preconditions.checkNotNull(mFile, "the image file cannot be null, please call .load() before this method!");
+        checkNotNull(mFile, "the image file cannot be null, please call .load() before this method!");
 
         if (compressListener != null) compressListener.onStart();
 
@@ -295,7 +295,7 @@ public class Compressor {
      * @param size     the file size of image   期望大小
      */
     private File saveImage(String filePath, Bitmap bitmap, long size) {
-        Preconditions.checkNotNull(bitmap, TAG + "bitmap cannot be null");
+        checkNotNull(bitmap, TAG + "bitmap cannot be null");
 
         File result = new File(filePath.substring(0, filePath.lastIndexOf("/")));
 
@@ -321,5 +321,12 @@ public class Compressor {
         }
 
         return new File(filePath);
+    }
+
+    private <T> T checkNotNull(T reference, Object errorMessage) {
+        if (reference == null) {
+            throw new NullPointerException(String.valueOf(errorMessage));
+        }
+        return reference;
     }
 }
