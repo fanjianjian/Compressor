@@ -35,13 +35,13 @@ Java代码
             }
         }).start();
 
-方法 | 说明
--- | --
-load(file) | 传入要压缩的图片文件
-listener(new OnCompressListener()) | 监听压缩进程
-start() | 开始压缩
-getImageSize(filePath) | 根据图片路径获取尺寸
-onDestory() | 销毁未执行完毕的异步线程
+方法|说明
+---|---
+load(file)|传入要压缩的图片文件
+listener(new OnCompressListener())|监听压缩进程
+start()|开始压缩
+getImageSize(filePath)|根据图片路径获取尺寸
+onDestory()|销毁未执行完毕的异步线程
 
 **最好在使用Compressor页面的onDestory方法执行之前，调用Compressor.onDestory()，原因是Compressor异步线程用的是AsyncTask**
 
