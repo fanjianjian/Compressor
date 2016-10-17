@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -26,7 +25,6 @@ public class Compressor {
 
     private OnCompressListener compressListener;
     private File mFile;
-    private String filename;
 
     private Compressor(Context context) {
         mCacheDir = getPhotoCacheDir(context, Compressor.DEFAULT_DISK_CACHE_DIR);
@@ -58,17 +56,9 @@ public class Compressor {
         return this;
     }
 
-    public Compressor filename(String filename) {
-        this.filename = filename;
-        return this;
-    }
-
-    public Compressor listener(OnCompressListener listener) {
+    public Compressor startAsync(OnCompressListener listener) {
         compressListener = listener;
-        return this;
-    }
 
-    public Compressor start() {
         checkNotNull(mFile, "the image file cannot be null, please call .load() before this method!");
 
         if (compressListener != null) compressListener.onStart();
@@ -93,7 +83,13 @@ public class Compressor {
         return this;
     }
 
-    public static void onDestory() {
+    public File start() {
+        checkNotNull(mFile, "the image file cannot be null, please call .load() before this method!");
+
+        return doCompress(mFile);
+    }
+
+    public static void onDestroy() {
         if (asyncTask != null && asyncTask.getStatus() != AsyncTask.Status.FINISHED) {
             asyncTask.cancel(true);
             asyncTask = null;
@@ -120,8 +116,7 @@ public class Compressor {
     }
 
     private File doCompress(File file) {
-        String thumb = mCacheDir.getAbsolutePath() + File.separator +
-                (TextUtils.isEmpty(filename) ? System.currentTimeMillis() : filename);
+        String thumb = mCacheDir.getAbsolutePath() + File.separator + System.currentTimeMillis();
 
         double size;
         String filePath = file.getAbsolutePath();

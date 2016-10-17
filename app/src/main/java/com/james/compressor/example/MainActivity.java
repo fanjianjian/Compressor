@@ -1,6 +1,7 @@
 package com.james.compressor.example;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Compressor.onDestory();
+        Compressor.onDestroy();
         super.onDestroy();
     }
 
@@ -71,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void doCompress(File imgFile) {
+    private void doCompressAsync(File imgFile) {
         Compressor.get(this)
                 .load(imgFile)
-                .listener(new OnCompressListener() {
+                .startAsync(new OnCompressListener() {
                     @Override
                     public void onStart() {
                         progress.setVisibility(View.VISIBLE);
@@ -96,6 +97,44 @@ public class MainActivity extends AppCompatActivity {
                         progress.setVisibility(View.INVISIBLE);
                         tvPicSize2.setText("压缩失败了");
                     }
-                }).start();
+                });
+    }
+
+    private void doCompress(final File imgFile) {
+        new AsyncTask<Void, Void, File>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                progress.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            protected File doInBackground(Void... params) {
+                return Compressor.get(MainActivity.this)
+                        .load(imgFile)
+                        .start();
+            }
+
+            @Override
+            protected void onPostExecute(File file) {
+                super.onPostExecute(file);
+                progress.setVisibility(View.INVISIBLE);
+                if (file == null) {
+                    tvPicSize2.setText("压缩失败了");
+                    return;
+                }
+                int[] imgSize = Compressor.get(MainActivity.this).getImageSize(file.getPath());
+                tvPicSize2.setText(String.format(Locale.ENGLISH, "缩略图大小：%1$dk  尺寸：%2$d * %3$d"
+                        , file.length() / 1024, imgSize[0], imgSize[1]));
+
+                Glide.with(MainActivity.this).load(file).into(imgPic2);
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                progress.setVisibility(View.INVISIBLE);
+            }
+        }.execute();
     }
 }
