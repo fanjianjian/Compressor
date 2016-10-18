@@ -38,6 +38,12 @@ public class Compressor {
                 // File wasn't able to create a directory, or the result exists but not a directory
                 return null;
             }
+
+            File noMedia = new File(cacheDir + "/.nomedia");
+            if (!noMedia.mkdirs() && (!noMedia.exists() || !noMedia.isDirectory())) {
+                return null;
+            }
+
             return result;
         }
         if (Log.isLoggable(TAG, Log.ERROR)) {
@@ -116,7 +122,7 @@ public class Compressor {
     }
 
     private File doCompress(File file) {
-        String thumb = mCacheDir.getAbsolutePath() + File.separator + System.currentTimeMillis();
+        String thumb = mCacheDir.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".jpg";
 
         double size;
         String filePath = file.getAbsolutePath();
